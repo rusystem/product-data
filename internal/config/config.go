@@ -23,7 +23,7 @@ type Server struct {
 func New() (*Config, error) {
 	cfg := new(Config)
 
-	if err := envconfig.Process("mdb", &cfg.MDB); err != nil {
+	if err := envconfig.Process("mongodb", &cfg.MDB); err != nil {
 		return nil, err
 	}
 
