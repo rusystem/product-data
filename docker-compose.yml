@@ -1,0 +1,38 @@
+version: '3.5'
+
+services:
+  product-data:
+    build: ./
+    command: ./product-data
+    hostname: product-data
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mongodb
+    environment:
+      - DB_URI=mongodb://mongodb
+      - DB_USERNAME=root
+      - DB_PASSWORD=qwerty
+      - DB_DATABASE=admin
+      - DB_COLLECTION=data
+      - SERVER_HOST=product-data
+      - SERVER_PORT=9000
+      - CLIENT_TIMEOUT=300s
+    networks:
+      - product-data
+  mongodb:
+    restart: always
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=qwerty
+      - MONGODB_DATABASE=admin
+    ports:
+      - "27017:27017"
+    networks:
+      - product-data
+
+networks:
+  product-data:
+    name: data_network
+    driver: bridge
