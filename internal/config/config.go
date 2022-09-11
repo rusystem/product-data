@@ -1,10 +1,14 @@
 package config
 
-import "github.com/kelseyhightower/envconfig"
+import (
+	"github.com/kelseyhightower/envconfig"
+	"time"
+)
 
 type Config struct {
 	MDB    Mongo
 	Server Server
+	Client Client
 }
 
 type Mongo struct {
@@ -20,14 +24,22 @@ type Server struct {
 	Port int
 }
 
+type Client struct {
+	Timeout time.Duration
+}
+
 func New() (*Config, error) {
 	cfg := new(Config)
 
-	if err := envconfig.Process("mongodb", &cfg.MDB); err != nil {
+	if err := envconfig.Process("db", &cfg.MDB); err != nil {
 		return nil, err
 	}
 
 	if err := envconfig.Process("server", &cfg.Server); err != nil {
+		return nil, err
+	}
+
+	if err := envconfig.Process("client", &cfg.Client); err != nil {
 		return nil, err
 	}
 

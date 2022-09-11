@@ -21,6 +21,12 @@ func NewDataRepository(cfg *config.Config, mdb *mongo.Database) *DataRepository 
 	}
 }
 
+func (r *DataRepository) InsertOne(ctx context.Context, data domain.Data) error {
+	_, err := r.mdb.Collection(r.cfg.MDB.Collection).InsertOne(ctx, data)
+
+	return err
+}
+
 func (r *DataRepository) UpdateOne(ctx context.Context, data domain.Data) error {
 	_, err := r.mdb.Collection(r.cfg.MDB.Collection).UpdateOne(ctx, bson.M{
 		"name":  data.Name,
@@ -40,6 +46,20 @@ func (r *DataRepository) List(ctx context.Context, params domain.Params) ([]doma
 	opts := domain.GetFindParams(&params)
 
 	cur, err := r.mdb.Collection(r.cfg.MDB.Collection).Find(ctx, nil, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	var data []domain.Data
+	if err := cur.All(ctx, &data); err != nil {
+		return nil, err
+	}
+
+	return data, err
+}
+
+func (r *DataRepository) GetAll(ctx context.Context) ([]domain.Data, error) {
+	cur, err := r.mdb.Collection(r.cfg.MDB.Collection).Find(ctx, nil, nil)
 	if err != nil {
 		return nil, err
 	}

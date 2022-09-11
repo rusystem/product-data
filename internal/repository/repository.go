@@ -9,8 +9,10 @@ import (
 )
 
 type Data interface {
+	InsertOne(ctx context.Context, data domain.Data) error
 	UpdateOne(ctx context.Context, data domain.Data) error
 	List(ctx context.Context, params domain.Params) ([]domain.Data, error)
+	GetAll(ctx context.Context) ([]domain.Data, error)
 }
 
 type Repository struct {

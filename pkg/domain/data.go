@@ -1,10 +1,12 @@
 package domain
 
-import "time"
+import (
+	"github.com/golang/protobuf/ptypes/timestamp"
+)
 
 type Data struct {
-	Name    string    `bson:"name"`
-	Price   int       `bson:"price"`
-	Changes int       `bson:"changes"`
-	Time    time.Time `bson:"time"`
+	Name    string               `bson:"name"`
+	Price   int64                `bson:"price"`
+	Changes int64                `bson:"changes"`
+	Time    *timestamp.Timestamp `bson:"time"`
 }

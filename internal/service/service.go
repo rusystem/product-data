@@ -2,22 +2,22 @@ package service
 
 import (
 	"context"
+	"github.com/rusystem/product-data/internal/client"
 	"github.com/rusystem/product-data/internal/repository"
-	data "github.com/rusystem/product-data/pkg/gen/data/proto"
-	"google.golang.org/protobuf"
+	"github.com/rusystem/product-data/pkg/domain"
 )
 
 type Data interface {
-	Fetch(ctx context.Context, req *data.FetchRequest) (, error)
-	List(ctx context.Context)
+	Fetch(ctx context.Context, url string) error
+	List(ctx context.Context, params domain.Params) ([]domain.Data, error)
 }
 
 type Service struct {
 	Data Data
 }
 
-func New(repo *repository.Repository) *Service {
+func New(repo *repository.Repository, productClient *client.Client) *Service {
 	return &Service{
-		Data: NewDataService(repo.Data),
+		Data: NewDataService(repo.Data, productClient),
 	}
 }
