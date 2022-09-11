@@ -9,7 +9,7 @@ import (
 )
 
 type Data interface {
-	Insert(ctx context.Context, data []domain.Data) error
+	UpdateOne(ctx context.Context, data domain.Data) error
 	List(ctx context.Context, params domain.Params) ([]domain.Data, error)
 }
 

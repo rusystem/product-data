@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/rusystem/product-data/internal/config"
+	"github.com/rusystem/product-data/internal/repository"
 	"github.com/rusystem/product-data/pkg/database"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,7 +29,6 @@ func main() {
 	if err != nil {
 		logrus.Fatal(err)
 	}
-
 	defer func(dbClient *mongo.Client, ctx context.Context) {
 		if err := dbClient.Disconnect(ctx); err != nil {
 			return
@@ -36,4 +36,6 @@ func main() {
 	}(dbClient, ctx)
 	db := dbClient.Database(cfg.MDB.Database)
 
+	dataRepo := repository.New(cfg, db)
+	dataService := service.New(dataRepo)
 }

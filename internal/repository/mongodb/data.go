@@ -4,32 +4,50 @@ import (
 	"context"
 	"github.com/rusystem/product-data/internal/config"
 	"github.com/rusystem/product-data/pkg/domain"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type Data struct {
+type DataRepository struct {
 	cfg *config.Config
 	mdb *mongo.Database
 }
 
-func NewData(cfg *config.Config, mdb *mongo.Database) *Data {
-	return &Data{
+func NewData(cfg *config.Config, mdb *mongo.Database) *DataRepository {
+	return &DataRepository{
 		cfg: cfg,
 		mdb: mdb,
 	}
 }
 
-func (r *Data) Insert(ctx context.Context, data []domain.Data) error {
-	var docs []interface{}
-	for _, t := range data {
-		docs = append(docs, t)
+func (r *DataRepository) UpdateOne(ctx context.Context, data domain.Data) error {
+	_, err := r.mdb.Collection(r.cfg.MDB.Collection).UpdateOne(ctx, bson.M{
+		"name":  data.Name,
+		"price": data.Price,
+		"time":  data.Time,
+	}, bson.D{
+		{"$inc", bson.D{{"changes", 1}}},
+	}, options.Update().SetUpsert(true))
+	if err != nil {
+		return err
 	}
-
-	_, err := r.mdb.Collection(r.cfg.MDB.Collection).InsertMany(ctx, docs)
 
 	return err
 }
 
-func (r *Data) List(ctx context.Context, params domain.Params) ([]domain.Data, error) {
+func (r *DataRepository) List(ctx context.Context, params domain.Params) ([]domain.Data, error) {
+	opts := domain.GetFindParams(&params)
 
+	cur, err := r.mdb.Collection(r.cfg.MDB.Collection).Find(ctx, nil, opts)
+	if err != nil {
+		return nil, err
+	}
+
+	var data []domain.Data
+	if err := cur.All(ctx, &data); err != nil {
+		return nil, err
+	}
+
+	return data, err
 }

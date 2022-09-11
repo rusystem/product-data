@@ -1,6 +1,9 @@
 package domain
 
-import "go.mongodb.org/mongo-driver/mongo/options"
+import (
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
+)
 
 type Params struct {
 	Pagination Pagination
@@ -8,13 +11,12 @@ type Params struct {
 }
 
 type Pagination struct {
-	Limit int64
+	Limit int64 `form:"limit"`
 }
 
 type Sort struct {
-	ByName            bool
-	ByPriceAscending  bool
-	ByPriceDescending bool
+	ByName           bool `form:"name"`
+	ByPriceAscending bool `form:"price"`
 }
 
 func (p Pagination) GetLimit() *int64 {
@@ -25,7 +27,7 @@ func (p Pagination) GetLimit() *int64 {
 	return &p.Limit
 }
 
-func GetParams(params *Params) *options.FindOptions {
+func GetFindParams(params *Params) *options.FindOptions {
 	var opts *options.FindOptions
 	if params != nil {
 		opts = &options.FindOptions{
@@ -33,4 +35,13 @@ func GetParams(params *Params) *options.FindOptions {
 		}
 	}
 
+	if params.Sort.ByName {
+		opts.SetSort(bson.M{"name": 1})
+	}
+
+	if params.Sort.ByPriceAscending {
+		opts.SetSort(bson.M{"price": 1})
+	}
+
+	return opts
 }
