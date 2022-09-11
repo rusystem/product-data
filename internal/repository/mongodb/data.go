@@ -28,12 +28,14 @@ func (r *DataRepository) InsertOne(ctx context.Context, data domain.Data) error 
 }
 
 func (r *DataRepository) UpdateOne(ctx context.Context, data domain.Data) error {
-	_, err := r.mdb.Collection(r.cfg.MDB.Collection).UpdateOne(ctx, bson.M{
-		"name":  data.Name,
-		"price": data.Price,
-		"time":  data.Time,
-	}, bson.D{
-		{"$inc", bson.D{{"changes", 1}}},
+	_, err := r.mdb.Collection(r.cfg.MDB.Collection).UpdateOne(ctx, bson.M{"name": data.Name}, bson.M{
+		"$set": bson.M{
+			"price": data.Price,
+			"time":  data.Time,
+		},
+		"$inc": bson.M{
+			"changes": 1,
+		},
 	}, options.Update().SetUpsert(true))
 	if err != nil {
 		return err
