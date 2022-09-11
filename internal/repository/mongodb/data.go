@@ -14,7 +14,7 @@ type DataRepository struct {
 	mdb *mongo.Database
 }
 
-func NewData(cfg *config.Config, mdb *mongo.Database) *DataRepository {
+func NewDataRepository(cfg *config.Config, mdb *mongo.Database) *DataRepository {
 	return &DataRepository{
 		cfg: cfg,
 		mdb: mdb,

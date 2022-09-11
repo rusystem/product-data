@@ -8,7 +8,6 @@ package proto
 
 import (
 	context "context"
-	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DataClient interface {
-	Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*Empty, error)
 	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 }
 
@@ -35,8 +34,8 @@ func NewDataClient(cc grpc.ClientConnInterface) DataClient {
 	return &dataClient{cc}
 }
 
-func (c *dataClient) Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
-	out := new(empty.Empty)
+func (c *dataClient) Fetch(ctx context.Context, in *FetchRequest, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
 	err := c.cc.Invoke(ctx, "/log.Data/Fetch", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -57,7 +56,7 @@ func (c *dataClient) List(ctx context.Context, in *ListRequest, opts ...grpc.Cal
 // All implementations should embed UnimplementedDataServer
 // for forward compatibility
 type DataServer interface {
-	Fetch(context.Context, *FetchRequest) (*empty.Empty, error)
+	Fetch(context.Context, *FetchRequest) (*Empty, error)
 	List(context.Context, *ListRequest) (*ListResponse, error)
 }
 
@@ -65,7 +64,7 @@ type DataServer interface {
 type UnimplementedDataServer struct {
 }
 
-func (UnimplementedDataServer) Fetch(context.Context, *FetchRequest) (*empty.Empty, error) {
+func (UnimplementedDataServer) Fetch(context.Context, *FetchRequest) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Fetch not implemented")
 }
 func (UnimplementedDataServer) List(context.Context, *ListRequest) (*ListResponse, error) {

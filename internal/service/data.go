@@ -6,7 +6,7 @@ type DataService struct {
 	repo repository.Data
 }
 
-func NewData(repo repository.Data) *DataService {
+func NewDataService(repo repository.Data) *DataService {
 	return &DataService{
 		repo: repo,
 	}

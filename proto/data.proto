@@ -3,12 +3,11 @@ syntax = "proto3";
 package log;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 option go_package = "../pkg/proto";
 
 service Data {
-  rpc Fetch(FetchRequest) returns (google.protobuf.Empty);
+  rpc Fetch(FetchRequest) returns (Empty);
   rpc List(ListRequest) returns (ListResponse);
 }
 
@@ -32,4 +31,6 @@ message ListResponse {
   int64 changes = 3;
   google.protobuf.Timestamp timestamp = 4;
 }
+
+message Empty{}
 

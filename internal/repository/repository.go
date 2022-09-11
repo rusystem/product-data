@@ -19,6 +19,6 @@ type Repository struct {
 
 func New(cfg *config.Config, mdb *mongo.Database) *Repository {
 	return &Repository{
-		Data: mongodb.NewData(cfg, mdb),
+		Data: mongodb.NewDataRepository(cfg, mdb),
 	}
 }
