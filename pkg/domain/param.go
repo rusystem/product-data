@@ -42,22 +42,18 @@ func (p Params) GetLimit() *int64 {
 	return &p.Limit
 }
 
-func GetFindParams(params *Params) *options.FindOptions {
-	var opts *options.FindOptions
-	if params != nil {
-		opts = &options.FindOptions{
-			Limit: params.GetLimit(),
-		}
-	}
-
+func GetFindParams(params *Params, opts *options.FindOptions) *options.FindOptions {
 	value := strings.ToLower(params.Entity)
-
 	if params.Sort == "Ascending" {
 		opts.SetSort(bson.M{value: 1})
 	}
 
 	if params.Sort == "Descending" {
 		opts.SetSort(bson.M{value: -1})
+	}
+
+	if params.Limit > 0 {
+		opts.SetLimit(params.Limit)
 	}
 
 	return opts

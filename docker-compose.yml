@@ -4,7 +4,7 @@ services:
   product-data:
     build: ./
     command: ./product-data
-    hostname: product-data
+    hostname: productdata
     ports:
       - "9000:9000"
     depends_on:
@@ -15,11 +15,11 @@ services:
       - DB_PASSWORD=qwerty
       - DB_DATABASE=admin
       - DB_COLLECTION=data
-      - SERVER_HOST=product-data
+      - SERVER_HOST=productdata
       - SERVER_PORT=9000
       - CLIENT_TIMEOUT=300s
     networks:
-      - product-data
+      - product_data
   mongodb:
     restart: always
     image: mongo:latest
@@ -30,9 +30,8 @@ services:
     ports:
       - "27017:27017"
     networks:
-      - product-data
+      - product_data
 
 networks:
-  product-data:
+  product_data:
     name: data_network
-    driver: bridge

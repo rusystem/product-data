@@ -45,9 +45,10 @@ func (r *DataRepository) UpdateOne(ctx context.Context, data domain.Data) error 
 }
 
 func (r *DataRepository) List(ctx context.Context, params domain.Params) ([]domain.Data, error) {
-	opts := domain.GetFindParams(&params)
+	findOptions := options.Find()
+	opts := domain.GetFindParams(&params, findOptions)
 
-	cur, err := r.mdb.Collection(r.cfg.MDB.Collection).Find(ctx, nil, opts)
+	cur, err := r.mdb.Collection(r.cfg.MDB.Collection).Find(ctx, bson.D{}, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +62,7 @@ func (r *DataRepository) List(ctx context.Context, params domain.Params) ([]doma
 }
 
 func (r *DataRepository) GetAll(ctx context.Context) ([]domain.Data, error) {
-	cur, err := r.mdb.Collection(r.cfg.MDB.Collection).Find(ctx, nil, nil)
+	cur, err := r.mdb.Collection(r.cfg.MDB.Collection).Find(ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
