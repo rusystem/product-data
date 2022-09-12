@@ -39,7 +39,7 @@ func (c *Client) Fetch(ctx context.Context, url string) error {
 	return err
 }
 
-func (c *Client) List(ctx context.Context, req domain.Params) ([]domain.Data, error) {
+func (c *Client) List(ctx context.Context, req domain.Params) (products []domain.Data, err error) {
 	entity, err := domain.ToPbEntity(req.Entity)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,6 @@ func (c *Client) List(ctx context.Context, req domain.Params) ([]domain.Data, er
 		return nil, err
 	}
 
-	var products []domain.Data
 	for _, v := range resp.Products {
 		products = append(products, domain.Data{
 			Name:    v.Name,
